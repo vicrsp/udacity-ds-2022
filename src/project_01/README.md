@@ -2,7 +2,7 @@
 ## :bicyclist: Why Does it Matter to Analyze your Indoor Cycling Training Data 
 
 
-![_HGI1327.jpg](images/_HGI1327.jpg)
+![Wattbikes at rugby world cup](images/_HGI1327.JPG)
 
 
 The main findings are summarized in a blog post you can read [here](https://medium.com/@victorspruela/why-does-it-matter-to-analyze-your-indoor-cycling-training-data-cfc0cbd2cbe9)
