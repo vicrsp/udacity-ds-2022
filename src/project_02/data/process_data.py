@@ -54,6 +54,8 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     # drop duplicates
     df.drop_duplicates(inplace=True)
 
+    return df
+
 
 def save_data(df: pd.DataFrame, database_filename: str) -> None:
     """Saves the processed data
@@ -63,7 +65,7 @@ def save_data(df: pd.DataFrame, database_filename: str) -> None:
         database_filename (str): The database file name
     """
 
-    engine = create_engine(database_filename)
+    engine = create_engine(f'sqlite:///{database_filename}')
     df.to_sql('message_categories', engine, index=False)  
 
 
