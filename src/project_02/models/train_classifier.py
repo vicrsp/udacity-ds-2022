@@ -9,33 +9,20 @@ from nltk.corpus import stopwords
 from nltk.stem.wordnet import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 
-from sklearn.model_selection import GridSearchCV, RandomizedSearchCV, train_test_split
+from sklearn.model_selection import GridSearchCV, train_test_split
 from sklearn.multioutput import MultiOutputClassifier
-from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split
-from sklearn.feature_selection import VarianceThreshold, SelectFromModel
+from sklearn.feature_selection import VarianceThreshold
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.metrics import classification_report
-from sklearn.svm import LinearSVC
-from sklearn.decomposition import PCA
-from sklearn.cluster import FeatureAgglomeration
-from sklearn.base import TransformerMixin, BaseEstimator
-from sklearn.neighbors import KNeighborsClassifier
 
 nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('wordnet')
 nltk.download('omw-1.4')
 
-
-class DenseTransformer(TransformerMixin, BaseEstimator):
-    def fit(self, X, y=None, **fit_params):
-        return self
-
-    def transform(self, X, y=None, **fit_params):
-        return X.todense()
-   
 
 def load_data(database_filepath):
     engine = create_engine(f'sqlite:///{database_filepath}')
@@ -99,7 +86,7 @@ def build_model():
         'text_pipeline__vect__ngram_range': [(1, 1), (1, 2)],
     }
     
-    cv = RandomizedSearchCV(pipeline, parameters, n_iter=10, verbose=3, random_state=0)
+    cv = GridSearchCV(pipeline, parameters, verbose=3, random_state=0)
     return cv
 
 def evaluate_model(model, X_test, Y_test, category_names):
