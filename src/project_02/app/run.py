@@ -45,7 +45,7 @@ engine = create_engine('sqlite:///../data/DisasterResponse.db')
 df = pd.read_sql_table('message_categories', engine)
 
 # load model
-model = joblib.load("../models/model_v0.sav")
+model = joblib.load("../models/classifier.pkl")
 
 
 def get_class_distribution_graph():
@@ -93,7 +93,7 @@ def get_word_cloud_graph(n_words = 20):
     vect = CountVectorizer(tokenizer=tokenize, max_features=n_words)
     X = vect.fit_transform(df.message)
     # extract the words and frquecies
-    bag_of_words = pd.DataFrame(zip(vect.get_feature_names(), np.asarray(X.sum(axis=0)).ravel()), columns=['word', 'freq'])
+    bag_of_words = pd.DataFrame(list(zip(vect.get_feature_names(), np.asarray(X.sum(axis=0)).ravel())), columns=['word', 'freq'])
     # define the plot colors
     colors = [plotly.colors.DEFAULT_PLOTLY_COLORS[random.randrange(1, 10)] for i in range(n_words)]
     
