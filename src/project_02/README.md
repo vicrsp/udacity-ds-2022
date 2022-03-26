@@ -1,5 +1,10 @@
 # Project 2 - Disaster Response Pipelines
 
+## :helicopter: Project Description
+
+In this project, a model was built to classify messages that are sent during disasters. There are 36 pre-defined response categories per message, and by classifying them, we can be properly assig them to their respective disaster relief agency. The problem in hand is a multi-label classification task, because a message can belong to one or more categories. The dataset was kindly provided by (Appen)[https://www.figure-eight.com/], containing real messages that were sent during disaster events.
+
+The project involved the construction of an ETL and Machine Learning pipelines, which is essential for deploying the model and consuming its predictions. A webapp was developed to enable anyone can input a message and see its classification. It is also possible to see some interesting visualizations of the dataset.
 
 ## :chart_with_upwards_trend: The Data
 

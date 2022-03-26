@@ -45,6 +45,9 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     # convert column from string to numeric
     categories[column] = categories[column].astype(int)
 
+    # Drop the  categories  from `df`
+    df.drop('categories', axis = 1, inplace = True)
+
     # drop the original categories column from `df`
     df.drop(columns=['categories'], inplace=True)
     
@@ -53,6 +56,9 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
 
     # drop duplicates
     df.drop_duplicates(inplace=True)
+
+    # remove "related" columns rows with a value of 2
+    df = df[df['related'] != 2]
 
     return df
 
@@ -66,7 +72,7 @@ def save_data(df: pd.DataFrame, database_filename: str) -> None:
     """
 
     engine = create_engine(f'sqlite:///{database_filename}')
-    df.to_sql('message_categories', engine, index=False)  
+    df.to_sql('message_categories', engine, index=False, if_exists='replace')  
 
 
 def main():
