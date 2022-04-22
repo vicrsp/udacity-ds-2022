@@ -2,9 +2,9 @@ import numpy as np
 from keras.layers import Input, Dropout, Dense, LSTM, TimeDistributed, RepeatVector
 from keras.models import Model
 from keras import regularizers
-from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.base import BaseEstimator, TransformerMixin, RegressorMixin
 
-class LSTMAutoencoder(BaseEstimator):
+class LSTMAutoencoder(BaseEstimator, RegressorMixin):
     def __init__(self, epochs=100, batch_size=32, validation_split=0.1) -> None:
         self.epochs = epochs
         self.batch_size = batch_size
