@@ -129,4 +129,4 @@ dmypy.json
 .pyre/
 src/project_02/models/*.sav
 src/project_02/models/*.pkl
-src/capstone/data/
+src/capstone/data/raw
