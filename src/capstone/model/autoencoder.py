@@ -13,11 +13,11 @@ class LSTMAutoencoder(BaseEstimator, RegressorMixin):
 
     def _build_network(self, X: np.ndarray) -> Model:
         inputs = Input(shape=(X.shape[1], X.shape[2]))
-        L1 = LSTM(16, activation='relu', return_sequences=True)(inputs)
-        L2 = LSTM(4, activation='relu', return_sequences=False)(L1)
+        L1 = LSTM(16, activation='relu', return_sequences=True, recurrent_dropout=0.1, dropout=0.05)(inputs)
+        L2 = LSTM(4, activation='relu', return_sequences=False, dropout=0.05)(L1)
         L3 = RepeatVector(X.shape[1])(L2)
-        L4 = LSTM(4, activation='relu', return_sequences=True)(L3)
-        L5 = LSTM(16, activation='relu', return_sequences=True)(L4)
+        L4 = LSTM(4, activation='relu', return_sequences=True, dropout=0.05)(L3)
+        L5 = LSTM(16, activation='relu', return_sequences=True, recurrent_dropout=0.1, dropout=0.05)(L4)
 
         output = TimeDistributed(Dense(X.shape[2]))(L5)
         model = Model(inputs=inputs, outputs=output)
