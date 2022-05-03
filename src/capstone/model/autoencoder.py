@@ -58,23 +58,39 @@ class LSTMAutoencoder(BaseEstimator, RegressorMixin):
         self._model = load_model(self.save_path)
 
 class LSTMAutoencoderTransformer(BaseEstimator, TransformerMixin):
-    def __init__(self, time_steps=1) -> None:
-        self.time_steps = time_steps
-    
+    def __init__(self, batch_size, window) -> None:
+        self.window = window
+        self.batch_size = batch_size
+
     def fit(self, X):
+        self.n_variables = X.shape[1]
         return self
 
     @staticmethod
-    def reshape_input(X, time_steps=1):
-        # reshape inputs for LSTM [samples, timesteps, features]
-        return X.reshape(X.shape[0], time_steps, X.shape[1])
+    def created_windowed_dataset(X, batch_size=500, window=1):
+        n = X.shape[0]
+        X_s = []
+        for b in range(0, n, batch_size):
+            for i in range(batch_size - window + 1):
+                v = X[(b+i):(b + i + window), :]
+                X_s.append(v)
+            
+        return np.array(X_s)
 
     @staticmethod
-    def reshape_predictions(X):
-        return X.reshape(X.shape[0], X.shape[2])
-    
+    def reverse_windowed_dataset(X, batch_size=500, window=1):        
+        n = X.shape[0]
+        X_s = []
+        for i in range(0, n, batch_size-window+1):
+            for k in range(i, i+batch_size-window):
+                X_s.append(X[k, 0, :])
+            for j in range(window):
+                X_s.append(X[k+1, j, :])
+
+        return np.array(X_s)
+  
     def transform(self, X):
-        return LSTMAutoencoderTransformer.reshape_input(X, self.time_steps)
+        return LSTMAutoencoderTransformer.created_windowed_dataset(X, self.batch_size, self.window)
     
     def inverse_transform(self, X):
-        return LSTMAutoencoderTransformer.reshape_predictions(X)
+        return LSTMAutoencoderTransformer.reverse_windowed_dataset(X, self.batch_size, self.window)
