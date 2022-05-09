@@ -6,25 +6,28 @@ from sklearn.base import BaseEstimator, TransformerMixin, RegressorMixin
 from os.path import join
 
 class LSTMAutoencoder(BaseEstimator, RegressorMixin):
-    def __init__(self, save_path=None, epochs=100, batch_size=32, validation_split=0.1, dropout=0.2) -> None:
+    def __init__(self, save_path=None, epochs=100, batch_size=32, validation_split=0.1, 
+                    dropout=0.3, lstm_units=64) -> None:
         self.epochs = epochs
         self.batch_size = batch_size
         self.validation_split = validation_split
         self.dropout = dropout
         self.save_path = save_path
+        self.lstm_units = lstm_units
         
     def _build_network(self, X: np.ndarray) -> Model:
+        # Creates the encoder layer
         inputs = Input(shape=(X.shape[1], X.shape[2]))
-        L1 = LSTM(16, activation='relu', return_sequences=True, dropout=self.dropout)(inputs)
-        L2 = LSTM(4, activation='relu', return_sequences=False, dropout=self.dropout)(L1)
+        encoder = LSTM(self.lstm_units, activation='relu', dropout=self.dropout)(inputs)
+        
+        # Creates the decoder layers
         # The RepeatVector layer simply repeats the input n times.
-        L3 = RepeatVector(X.shape[1])(L2)
-        L4 = LSTM(4, activation='relu', return_sequences=True, dropout=self.dropout)(L3)
-        L5 = LSTM(16, activation='relu', return_sequences=True, dropout=self.dropout)(L4)
+        decoder = RepeatVector(X.shape[1])(encoder)
+        decoder = LSTM(self.lstm_units, activation='relu', return_sequences=True, dropout=self.dropout)(decoder)
         # The TimeDistributed layer creates a vector with a length of the number of outputs from the previous layer. 
-        output = TimeDistributed(Dense(X.shape[2]))(L5)
+        output = TimeDistributed(Dense(X.shape[2]))(decoder)
         model = Model(inputs=inputs, outputs=output)
-        model.compile(optimizer='adam', loss='mae')
+        model.compile(optimizer='adam', loss='mse')
         return model
 
     def fit(self, X: np.ndarray, y=None):   
@@ -57,15 +60,6 @@ class LSTMAutoencoder(BaseEstimator, RegressorMixin):
     def _load(self) -> None:
         self._model = load_model(self.save_path)
 
-class LSTMAutoencoderTransformer(BaseEstimator, TransformerMixin):
-    def __init__(self, batch_size, window) -> None:
-        self.window = window
-        self.batch_size = batch_size
-
-    def fit(self, X):
-        self.n_variables = X.shape[1]
-        return self
-
     @staticmethod
     def created_windowed_dataset(X, batch_size=500, window=1):
         n = X.shape[0]
@@ -88,9 +82,14 @@ class LSTMAutoencoderTransformer(BaseEstimator, TransformerMixin):
                 X_s.append(X[k+1, j, :])
 
         return np.array(X_s)
+
+class LSTMAutoencoderTransformer(BaseEstimator, TransformerMixin):
+    def __init__(self, batch_size, window) -> None:
+        self.window = window
+        self.batch_size = batch_size
   
     def transform(self, X):
-        return LSTMAutoencoderTransformer.created_windowed_dataset(X, self.batch_size, self.window)
+        return LSTMAutoencoder.created_windowed_dataset(X, self.batch_size, self.window)
     
     def inverse_transform(self, X):
-        return LSTMAutoencoderTransformer.reverse_windowed_dataset(X, self.batch_size, self.window)
+        return LSTMAutoencoder.reverse_windowed_dataset(X, self.batch_size, self.window)
