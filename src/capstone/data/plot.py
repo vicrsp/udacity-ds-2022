@@ -46,3 +46,27 @@ def plot_encoded_variables(df, df_rec, process_variables, simulation_run, fault_
     rp = sns.relplot(data=df_melt, x='sample', y='value', hue='type', col='variable', kind='line', 
                 col_wrap=6, height=2,
                  facet_kws={'sharey': False, 'sharex': True})
+
+
+def plot_simulation_anomalies(df, simulation_run, threshold):    
+    df_sim = df[(df.simulationRun == simulation_run)]
+    fig, ax = plt.subplots(figsize=(12,6))
+    ax.plot(df_sim['sample'], df_sim['loss_mae'], label='Absolute Error')
+    ax.axhline(y=threshold, color='r', linestyle='--', label='Threshold')
+    
+    # ax2 = ax.twinx() 
+    # rma = df_sim['loss_mae'].rolling(5).mean().diff()
+    # ax2.plot(df_sim['sample'], rma, 'r', label='Gradient')
+
+    anomaly_indexes = df_sim[df_sim['loss_mae']>threshold]['sample']
+    if(len(anomaly_indexes)>0):
+        anomaly_idx = df_sim[df_sim['loss_mae']>threshold]['sample'].values[0]
+        ax.axvline(x=anomaly_idx, color='k', linestyle='--', label='Anomaly')
+        ax.set_title(f"Anomaly started at sample #{anomaly_idx}")
+    else:
+        ax.set_title('Anomalies were not detected!')
+    
+    ax.set_ylabel('Absolute Error')
+    ax.set_xlabel('sample #')
+    ax.legend()
+    fig.show()
