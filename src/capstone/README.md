@@ -8,7 +8,7 @@ The main findings are summarized in a blog post you can read [here](https://medi
 
 ### :muscle: Codes for LSTM Autoencoders: Detecting anomalies in the Tennessee Eastman Process
 
-#### :**chart_with_upwards_trend**: The Data
+#### :chart_with_upwards_trend: The Data
 
 The data used in this project can be downloaded from [Kaggle] (https://www.kaggle.com/datasets/averkij/tennessee-eastman-process-simulation-dataset). It was converted to csv using the R script available in `data\convert_raw.R`.
 
