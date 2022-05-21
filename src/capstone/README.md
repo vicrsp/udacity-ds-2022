@@ -39,6 +39,7 @@ The complete list is available in the `requirements.txt` file.
 * `data\plot.py`: contains helper functions used to plot the analysis results
 * `data\utils.py`: general helper functions
 * `report` folder: contains all images used in the blog post.
+* `data\model` folder: contains the trained models used in the analysis.
 
 
 ### :mag_right: Methodology
