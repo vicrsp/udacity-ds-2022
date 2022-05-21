@@ -10,7 +10,7 @@ The main findings are summarized in a blog post you can read [here](https://medi
 
 #### :**chart_with_upwards_trend**: The Data
 
-The data used in this project can be downloaded from [Kaggle] (https://www.kaggle.com/datasets/averkij/tennessee-eastman-process-simulation-dataset).
+The data used in this project can be downloaded from [Kaggle] (https://www.kaggle.com/datasets/averkij/tennessee-eastman-process-simulation-dataset). It was converted to csv using the R script available in `data\convert_raw.R`.
 
 
 #### :man_technologist: Installations
@@ -30,8 +30,8 @@ The complete list is available in the `requirements.txt` file.
 
 #### :memo: Files description
 
-* LSTM Auto Encoder - EDA.ipynb: Jupyter Notebook with the project's exploratory data analysis
-* LSTM Auto Encoder - Results.ipynb: Jupyter Notebook with the results analysis
+* `LSTM Auto Encoder - EDA.ipynb`: Jupyter Notebook with the project's exploratory data analysis
+* `LSTM Auto Encoder - Results.ipynb`: Jupyter Notebook with the results analysis
 * `evaluate_anomaly_detection.py`: script to used predict anomalies for a given dataset and autoencoder model
 * `train_autoencoder.py`: script used to train the autoencoder
 * `model\autoencoder.py`: contains the autoencoder implementation
